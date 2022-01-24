@@ -27,7 +27,9 @@ Map::Map(const Map& obj) {
 }
 
 Map& Map::operator=(const Map& obj) {
-    delete m_pairs;
+    if (this == &obj)
+        return *this;
+    delete [] m_pairs;
     m_pairs = new Pair[obj.m_maxItems];
     for (int i = 0; i < obj.m_size; i++) {
         m_pairs[i].key = obj.m_pairs[i].key;
