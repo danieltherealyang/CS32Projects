@@ -1,0 +1,41 @@
+Daniel Yang
+ID: 205772799
+(Problem 2)
+(4,6)
+(3,6)
+(5,6)
+(5,7)
+(5,8)
+(6,8)
+(7,8)
+(8,8)
+(8,7)
+(6,6)
+(4,5)
+(4,4)
+
+(Problem 4)
+(4,6)
+(4,5)
+(5,6)
+(3,6)
+(4,4)
+(6,6)
+(5,7)
+(4,3)
+(5,4)
+(5,8)
+(4,2)
+(6,4)
+
+The algorithms are different because mazestack.cpp uses a stack to implement
+the search algorithm, meaning that the last coordinate to get pushed onto
+the stack is the first one to get popped off, while mazequeue.cpp uses a
+queue to implement the search algorithm, meaning that the first coordinate
+enqueue on on the queue is the first coordinate to get popped off.
+
+The mazestack.cpp algorithm is depth first search, meaning that it searches
+each path to its end before backtracking and following a different possible
+path while the mazequeue.cpp algorithm is breadth first search, meaning that
+it searches each possible path concurrently branching out as the paths diverge
+until the algorithm finds the end coordinate.
