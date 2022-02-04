@@ -16,6 +16,8 @@ class Coord
 };
 
 bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int ec) {
+    if (nRows < 0 || nRows != maze->size()) {} //bypass unused variable error
+    if (nCols < 0 || nCols != maze[0].length()) {} //bypass unused variable error
     // coords start from 0
     // Return true if there is a path from (sr,sc) to (er,ec)
     // through the maze; return false otherwise
@@ -25,7 +27,6 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
     maze[sr][sc] = '!';
     while (!coordQueue.empty()) {
         Coord current = coordQueue.front();
-        cout << "(" << current.r() << "," << current.c() << ")" << endl;
         coordQueue.pop();
         if (current.r() == er && current.c() == ec)
             return true;
