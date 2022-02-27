@@ -1,0 +1,50 @@
+Daniel Yang
+ID: 205772799
+(Problem 2)
+The insert function calls and returns the doInsertOrUpdate and the findFirstAtLeast
+functions, which uses the "<" and "==" operators to compare the key that was input to
+the function. Since the key is of type Coord, the Coord class doesn't define those
+two operators, the compiler has no idea how to compare two Coord keys which
+causes a compilation error.
+
+(Problem 3e)
+During the execution of test case 3, the vector is reallocated to a larger array when
+k==2 since there is a push_back call when the vector is already at full capacity. After
+this reallocation, the iterator no longer points to an address in memory that is part
+of the vector, which causes the test case to fail.
+
+(Problem 4b)
+The problem could not be solved with the one parameter overload being implemented recursively
+because there would be no way to transmit string data built up by previous iterations of
+recursive calls. The only data that could be accessed would be the data held by the class
+object pointer "c" passed in as a parameter, which defeats the whole purpose of a recursive
+solution in the first place.
+
+(Problem 5a)
+The time complexity is O(N^3) because the most inner for loop runs N times, and the 2nd most
+inner for loop also runs N times, as well as the most outer loop running N times. The operations
+performed in the most inner loop is an if statement comparing two boolean values, making it an O(1)
+operation. This brings the total time complexity to O(N) * O(N) * O(N) * O(1) = O(N^3).
+
+(Problem 5b)
+The most inner loop still has a complexity of O(N) since the loop runs an if comparison of two
+booleans, an O(1) operation, N times. For the outer and middle for loops, they would be running
+the most inner for loop a total of 0 + 1 + 2 + 3 + ... + (N - 1) times, which has a time complexity
+of O(N^2). The algorithm would be running an O(N) operation O(N^2) times, making the total complexity
+O(N) * O(N^2) = O(N^3).
+
+(Problem 6a)
+In terms of the number of linked list nodes visited during the execution of this function alone, the
+complexity would be O(N) since the each node in "m" is getting copied to "res" and there are N nodes in
+"m." Taking into account the fact that the get() function is O(N) the function is bounded by a maximum
+of N/2 nodes visited which is proportional to N making the function O(N), the total time complexity of
+the reassign function would be O(N^2) since an O(N) function is being performed O(N) times. All of the
+other functions used are O(1) therefore the final time complexity for this function is O(N^2).
+
+(Problem 6b)
+The function has a time complexity of O(N) because N nodes are visited and each having an O(1) operation
+performed, with that O(1) operation being the reassignment of the node's member variable. This implementation
+is better than the one in part A because part A's algorithm increases its runtime exponentially while this
+algorithm increases its runtime linearly as the number of nodes increase, meaning that no matter how much
+higher the baseline overhead of this function is than part A's algorithm eventually as N increases the
+this algorithm will perform faster than part A's algorithm.
