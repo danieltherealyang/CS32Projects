@@ -2,65 +2,155 @@ Daniel Yang
 ID: 205772799
 (Problem 1)
 "Actor.h"
-Actor class:
-I chose to define an inline doesOverlap function because all actors need to check overlap and have the same 
-sprite bounds and therefore don't require a unique overlap function.
-The setAlive(), getAlive(), getDamageable(), doesBlock(), and getWorld() functions are just setters and getters
-for member variables of the Actor class so I chose to make a shared inline function for all actors since they
-all need to check if they are alive, block movement, and if they are damageable. The getWorld() added to make
-it easier for derived class methods to access StudentWorld functions.
-I chose to make damage() a virtual function with the default being that the function does nothing since
-not all actors are damageable but it is more convenient to still have the function for non-damageable actors
-since they can be looped through without checking if the actor is damageable or not.
-I chose to make doSomething() and bonk() pure virtual because all actors need those functions but they all do
-something different when called.
+class Actor
+    virtual void doSomething() = 0;
+        All actors need to run this function during each game tick but no Actor object will be created directly.
+        Therefore, this function was defined as pure virtual since it will only needs to be defined for derived
+        classes and not for the Actor class itself.
+    virtual void bonk() = 0;
+        All actors need to run this function during each game tick but no Actor object will be created directly.
+        This function was defined as pure virtual so that derived classes can all be bonked but not the Actor
+        class since all actors created will be instances of classes derived from Actor.
+    bool doesOverlap(int x, int y)
+        This function is the same for all actors since all actor sprite bounds are the same, so this function
+        was defined in the Actor base class so there wouldn't be redundant functions.
+    void setAlive(bool alive) {m_alive = alive;}
+        This function was defined because all actors need to set their alive status in the same way.
+    bool getAlive() {return m_alive;}
+        This function was defined because all actors need to check if they are in the alive state.
+    bool getDamageable() {return m_damageable;}
+        This function was defined because all actors need to check if they are damageable.
+    bool doesBlock() {return m_doesBlock;}
+        This function was defined because all actors need to check if they block movement.
+    virtual void damage() {};
+        This function was defined here because all actors need to take damage even if they are not damageable
+        since that makes it easier to loop throughout all of the actors and keep them all in one data structure
+        rather than splitting damageable and non-damageable actors. This was defined to be virtual since
+        each Actor takes damage in a different way but in the case that the derived class doesn't define the
+        function it does nothing, which is the case for non-damageable actors.
+    StudentWorld* getWorld() {return m_gameWorld;}
+        This function was defined here so that all derived classes could have a common way to interact with the
+        StudentWorld object, since they need to interact with the other Actors stored in that StudentWorld object.
 
-Damageable class:
-This class is a derived class of Actor since all damageable actors is a subset of all actors. I chose to redefine
-the damage() function that the class inherited from Actor as a pure virtual function because all damageable
-actors need to have a different reaction to being damaged but the Actor class itself doesn't need
-to define those actions since only objects derived from Actor are going to be created by StudentWorld.
+class Damageable
+    virtual void damage() = 0;
+        This function was inherited from Actor but was redefined to be pure virtual so that all derived classes
+        of this Damageable class would have to define their own damage functions because Actors derived from this
+        class must take damage and the function given in the Actor base class does nothing.
 
-Fireable class:
-I defined getRecharge(), setRecharge(), and decrementRecharge() as a way to control the timing for actors that
-fire objects, mainly Peach and Piranha. I defined them as inline functions because they were trivial and mainly
-did simple interactions with member variables. 
+class Fireable
+    int getRecharge() {return m_rechargeTicks;}
+        This function was defined because all actors that fire projectiles need to check how long they have
+        before they can fire again.
+    void setRecharge(int ticks) {m_rechargeTicks = ticks;}
+        This function was defined because all actors that fire projectiles need to reset their recharge timers.
+    void decrementRecharge() {m_rechargeTicks--;}
+        This function was defined because all actors that fire projectiles need to decrement their recharge timers
+        after each game tick.
 
-Peach class:
-I defined doSomething(), bonk(), and damage() as member functions to differentiate the Peach object from other actors,
-since Peach has unique actions to perform when these functions are called. Peach is an Actor but also damageable
-so all three functions inherited from the Damageable base class, which is a derived class of Actor were defined in the
-Peach class. I defined setHealth(), giveStar(), giveJump(), giveShoot(), hasStar(), hasJump(), and hasShoot() as getters
-and setters for Peach's member variables that control the powers she gets and whether or not she has enough health to
-continue, all of which are unique interactions not possessed by other Actors.
+class Peach
+    void doSomething();
+        This function was defined because Peach does something different than other actors each game tick.
+    void bonk();
+        This function was defined because Peach performs a unique action when bonked different from other actors.
+    void damage();
+        This function was defined because Peach is a damageable actor and needs to specify what action to take
+        when damaged.
+    void setHealth(int health) {m_health = health;}
+        This function was defined because Peach has hitpoints and needs a way to increase or decrease them.
+    void giveStar(int ticks);
+        This function was defined because Peach can have a Star powerup and needs a way to set the member variable
+        that keeps track of whether she has the powerup.
+    void giveJump();
+        This function was defined because Peach can be given a Jump powerup and needs a way to set the member
+        variable that keeps track of whether she has the powerup.
+    void giveShoot();
+        This function was defined because Peach can be given a Shoot powerup and needs a way to set the member
+        variable that keeps track of whether she has the powerup.
+    bool hasStar() {return m_starPower;}
+        This function was defined because other Actors need to check whether Peach has the star powerup so they
+        can decide how to act.
+    bool hasJump() {return m_jumpPower;}
+        This function was defined because other Actors need to check whether Peach has the jump powerup so they
+        can decide how to act.
+    bool hasShoot() {return m_shootPower;}
+        This function was defined because other Actors need to check whether Peach has the shoot powerup so they
+        can decide how to act.
 
-Other classes:
-For the Block, Pipe, Flag, Mario, Flower, Mushroom, Star, Piranha_Fireball, Peach_Fireball, and Shell classes
-I defined bonk() and doSomething() to define their unique behaviors that differentiate them from the rest of the
-actors since they were derived from the Actor base class. For Goomba, Koopa, and Piranha, they indirectly inherited
-the Actor class through the Damageable class, so I defined bonk(), doSomething(), and damage() as member functions
-because bonk() and doSomething() were inherited from the Actor class and damage() from the Damageable class.
-These functions were defined as member functions to define the unique behaviors of these objects that are
-different from the rest of the Actors.
+class Block, Pipe, Flag, Mario, Flower, Mushroom, Star, Piranha_Fireball, Peach_Fireball, Shell
+    void doSomething();
+        Each of these actors performs a different action each game tick, so this function inherited from the Actor
+        class was defined here.
+    void bonk();
+        Each of these actors performs a different action when bonked, so this function inherited from the Actor class
+        was defined here.
+
+class Goomba, Koopa, Piranha
+    void doSomething();
+        This function was defined because these damageable actors perform different actions during each game tick,
+        so the pure virtual function from the Actor base class needs to be defined here.
+    void damage();
+        This function was defined because all damageable actors need a way to be notified that they are damaged
+        and they perform different actions upon being damaged.
+    void bonk();
+        This function was defined here because all damageable actors need to be bonked and each actor performs
+        a different action when bonked.
 
 "StudentWorld.h"
 StudentWorld class:
-The init, move, and cleanup were defined here because they were required by the provided framework. I defined an
-addPeach() function to initialize the peach object during the parsing of the level data. I defined the two
-overloaded add() functions as templates because adding an Actor is the same regardless of type, with the only
-difference being that some Actors also require a direction parameter hence the overloaded function.
-I also defined an addBlock() function separate from the template add functions because the blocks are initialized
-by defining the type of goodie that is stored, which is different from all the other actors which only require an
-x,y coordinate and a direction for certain actors. I defined a getPeach() function so that the actors can retrieve
-information or call functions of the StudentWorld's Peach object. I created a notBlocked() and notBlockedDamageable()
-function so that actors can check if there is an object blocking them from moving in the case of notBlocked() and
-check if they overlap with a damageable object in the case of notBlockedDamageable. Both functions have overloads
-that set a reference to an Actor pointer so that the caller of the function can bonk or damage whatever object
-they overlap with. I defined a bonkOverlap function so Peach could bonk all overlapping functions whether they
-blocked movement, were damageable, both or neither.
+    virtual int init(); //initializes each level: game start, new level, restart level
+        Defined here because the StudentWorld class needs to initialize levels. Virtual because the skeleton
+        defined this function as virtual.
+    virtual int move(); //20x per second, updating game actors, introduce new actors, delete actors
+        Defined here because this class needs to update and manage all of the actors in the game. Virtual
+        because the skeleton defined the function as virtual.
+    virtual void cleanUp(); //current level or loses a life, free all actors, 
+        Defined here because this class needs to delete all of the Actor objects to prevent a memory leak.
+        Virtual because the skeleton defined the function as virtual.
+    void addPeach(int x, int y) {m_Peach = new Peach(x, y, this);} //x and y take in pixel coords
+        Defined here because the class needs a way to add a Peach actor. This functionality is in a separate
+        function from other actors because Peach is stored separately from other actors.
+
+    template <typename T>
+    void add(int x, int y) {actors.push_front(new T(x, y, this));}
+        Defined here as a template because most Actors are initialized in the same format, with their constructor
+        parameters being identical.
+    template <typename T>
+    void add(int x, int y, int dir) {actors.push_front(new T(x, y, dir, this));}
+        Defined here because some of the Actors need a direction parameter in addition to coordinates but their
+        constructors have the parameters in an identical order.
+    void addBlock(int x, int y, string goodie) {actors.push_front(new Block(x, y, goodie, this));};
+        Defined here because blocks have a unique goodie parameter to initialize the object which is different
+        from all other actors.
+
+    Peach* getPeach() {return m_Peach;}
+        Defined because all actors need a way to get the peach object stored in the game world.
+
+    bool notBlocked(int x, int y, Actor*& object); //x and y are pixel coords
+        Defined here because all actors need to check if a target x and y coordinate is blocked by a movement
+        blocking actor. Sets the object reference parameter so that the caller can interact with the blocking
+        actor.
+    bool notBlocked(int x, int y);
+        Defined here because all actors need to check if a target x and y coordinate is blocked by a movement
+        blocking actor.
+    bool notBlockedDamageable(int x, int y, Actor*& object);
+        Defined here because all actors need to check if they overlap with a damageable actor at a particular
+        coordinate. Sets the object reference parameter so that the caller can interact with the damageable
+        actor they overlap with.
+    bool notBlockedDamageable(int x, int y);
+        Defined here because all actors need to check if they overlap with a damageable actor at a particular
+        coordinate.
+    void bonkOverlap(int x, int y);
+        Defined here so that actors can bonk all overlapping actors whether or not they block movement or are
+        damageable.
+
+    void finishLevel() {m_finishedLevel = true;}
+        Defined here so that actors can notify the game world that the level was finished.
+    void gameOver() {m_gameOver = true;}
+        Defined here so that actors can notify the game world that the game has completed.
 
 (Problem 2)
-I somehow managed to implement all functionality as far as I know.
+I managed to implement all functionality as far as I know.
 
 (Problem 3)
 It was not specified how exactly to check whether Koopa, Goomba, or Piranha were being bonked by peach so I
