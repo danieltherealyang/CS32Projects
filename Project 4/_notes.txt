@@ -1,0 +1,24 @@
+no public member functions or variables in derived classes, only private member variables and helper
+methods
+RadixTree class, figure out all the special cases first
+simplest data structures possible
+only use permitted STL containers
+
+Basic features:
+up to 100k members
+each member can have dozens of attribute pair values
+must translate member pairs to compatible pairs
+
+Turn in:
+PersonProfile.h: Contains your declaration of PersonProfile
+PersonProfile.cpp: Contains your implementation of PersonProfile
+AttributeTranslator.h: Contains your declaration of AttributeTranslator
+AttributeTranslator.cpp: Contains your implementation of AttributeTranslator
+MemberDatabase.h: Contains your declaration of MemberDatabase
+MemberDatabase.cpp: Contains your implementation of MemberDatabase
+MatchMaker.h: Contains your declaration of MatchMaker
+MatchMaker.cpp: Contains your implementation of MatchMaker
+RadixTree.h: Contains your Radix Tree class template and its implementation
+utility.h: (optional) Contains utility function prototypes
+utility.cpp: (optional) Contains utility function implementations
+report.docx, report.doc, or report.txt: Contains your report
