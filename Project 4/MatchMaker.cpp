@@ -71,6 +71,7 @@ vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold
     sort(compAttribCount.begin(), compAttribCount.end(), bind(&MatchMaker::ecPredicate, this, placeholders::_1, placeholders::_2));
     for (int i = 0; i < compAttribCount.size(); i++) {
         sortedEmailCount.push_back(*compAttribCount[i]);
+        delete compAttribCount[i];
     }
     return sortedEmailCount;
 }

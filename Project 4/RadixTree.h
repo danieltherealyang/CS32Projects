@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <type_traits>
 
 template <typename ValueType>
 class RadixTree {
@@ -11,10 +12,6 @@ class RadixTree {
         ~RadixTree();
         void insert(std::string key, const ValueType& value);
         ValueType* search(std::string key) const;
-
-        // Remove later
-        //void print();
-
     private:
         struct Node {
             std::string postfix = "";
@@ -23,115 +20,30 @@ class RadixTree {
         };
 
         Node* m_head;
+        
+        template <typename U = ValueType>
+        typename std::enable_if<std::is_pointer<U>::value, void>::type 
+        deleteNode(Node* node) {
+            if (node == nullptr)
+                return;
+            delete node->value;
+            for (int i = 0; i < 128; i++) {
+                deleteNode(node->character[i]);
+            }
+            delete node;
+        };
 
-        void deleteNode(Node* node);
-        void insertRecurse(Node* node, std::string key, const ValueType& value);
-
-        //Remove later
-        //void printNode(Node* node, std::string path);
+        template <typename U = ValueType>
+        typename std::enable_if<!std::is_pointer<U>::value, void>::type 
+        deleteNode(Node* node) {
+            if (node == nullptr)
+                return;
+            for (int i = 0; i < 128; i++) {
+                deleteNode(node->character[i]);
+            }
+            delete node;
+        };
 };
-
-/*
-template <typename ValueType> //normal
-void RadixTree<ValueType>::printNode(Node* node, std::string path) {
-    for (int i = 1; i < 128; i++) {
-        if (node->character[i] != nullptr) {
-            printNode(node->character[i], path + "->" + char(i));
-        }
-    }
-    if (node->character[0] != nullptr) {
-        if (node->postfix != "")
-            std::cout << path << "->" << "postfix: " << node->postfix << "->value: " << node->character[0]->value << std::endl;
-        else 
-            std::cout << path << "->value: " << node->character[0]->value << std::endl;
-    }
-}
-
-template <typename ValueType> //MemberDatabase m_profileTree
-void RadixTree<ValueType>::printNode(Node* node, std::string path) {
-    for (int i = 1; i < 128; i++) {
-        if (node->character[i] != nullptr) {
-            printNode(node->character[i], path + "->" + char(i));
-        }
-    }
-    if (node->character[0] != nullptr) {
-        if (node->postfix != "") {
-            std::cout << path << "->" << "postfix: " << node->postfix << "->value: " << std::endl;
-            std::cout << node->character[0]->value->GetName() << "," << node->character[0]->value->GetEmail() << std::endl;
-            for (int i = 0; i < node->character[0]->value->GetNumAttValPairs(); i++) {
-                AttValPair av;
-                node->character[0]->value->GetAttVal(i, av);
-                std::cout << av.attribute << "," << av.value << std::endl;
-            }
-        } else {
-            std::cout << path << "->value: " << std::endl;
-            std::cout << node->character[0]->value->GetName() << "," << node->character[0]->value->GetEmail() << std::endl;
-            for (int i = 0; i < node->character[0]->value->GetNumAttValPairs(); i++) {
-                AttValPair av;
-                node->character[0]->value->GetAttVal(i, av);
-                std::cout << av.attribute << "," << av.value << std::endl;
-            }
-        }
-    }
-}
-
-template <typename ValueType> //MemberDatabase m_attributeTree
-void RadixTree<ValueType>::printNode(Node* node, std::string path) {
-    for (int i = 1; i < 128; i++) {
-        if (node->character[i] != nullptr) {
-            printNode(node->character[i], path + "->" + char(i));
-        }
-    }
-    if (node->character[0] != nullptr) {
-        if (node->postfix != "") {
-            std::cout << path << "->" << "postfix: " << node->postfix << "->value: " << std::endl;
-            for (int i = 0; i < node->character[0]->value->size(); i++) {
-                std::cout << node->character[0]->value ->at(i) << std::endl;
-            }
-        } else {
-            std::cout << path << "->value: " << node->character[0]->value << std::endl;
-            for (int i = 0; i < node->character[0]->value->size(); i++) {
-                std::cout << node->character[0]->value ->at(i) << std::endl;
-            }
-        }
-    }
-}
-
-template <typename ValueType> //attributeTranslator
-void RadixTree<ValueType>::printNode(Node* node, std::string path) {
-    for (int i = 1; i < 128; i++) {
-        if (node->character[i] != nullptr) {
-            printNode(node->character[i], path + "->" + char(i));
-        }
-    }
-    if (node->character[0] != nullptr) {
-        if (node->postfix != "") {
-            path = path +  "->" + "postfix: " + node->postfix;
-            for (int i = 0; i < node->character[0]->value->size(); i++) {
-                std::cout << path << "->value: " << node->character[0]->value->at(i).attribute << "," << node->character[0]->value->at(i).value << std::endl;
-            }
-        } else {
-            for (int i = 0; i < node->character[0]->value->size(); i++) {
-                std::cout << path << "->value: " << node->character[0]->value->at(i).attribute << "," << node->character[0]->value->at(i).value << std::endl;
-            }
-        }
-    }
-}
-
-template <typename ValueType>
-void RadixTree<ValueType>::print() {
-    printNode(m_head, "head");
-}
-*/
-template <typename ValueType>
-void RadixTree<ValueType>::deleteNode(Node* node) {
-    if (node == nullptr)
-        return;
-    for (int i = 0; i < 128; i++) {
-        deleteNode(node->character[i]);
-    }
-    delete node;
-}
 
 template <typename ValueType>
 RadixTree<ValueType>::RadixTree() {

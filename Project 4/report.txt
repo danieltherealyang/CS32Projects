@@ -1,0 +1,82 @@
+Daniel Yang
+ID: 205772799
+I was able to finish all parts of the project.
+I didn't use any banned STL components and also don't seem to have any bugs as far as I'm aware.
+
+(Testing)
+RadixTree.h:
+To test this class, I created a print function to print out all of the keys and values stored in
+the tree for debugging purposes, which will be removed before submitting the final version.
+I then inserted various keys and values, checking if the insertion performed correctly with the
+print function. The main cases that I tested were inserting a key then a substring of the key (ex.
+"hello" then "he"), inserting a key then a superstring of the key (ex. "he" then "hello"), and
+inserting the same key twice to check if the value was overwritten. In addition, I tested to see
+if keys were case sensitive and checked using the print function I wrote, which showed that the
+keys with different capitalizations were stored as separate keys. I also tested inserting keys of
+length 1 to see if there was any strange edge case behavior, which there wasn't.
+
+To test the search function, I inserted an arbitrary number of keys into the RadixTree and searched
+for many keys that were not in the tree to test if the function was returning a nullptr. I then
+called the search function for all of the keys one by one and modified each of their values,
+printing out the entire tree at the end to see if all of the values were changed to how I specified.
+
+PersonProfile:
+I tested this class by calling the GetName() and GetEmail() methods to see if they returned the
+values that the class object was initialized with. For example, if I initialized the class with
+PersonProfile("Jerry","jerry.jerry@jerry.jerry") I would expect GetName() and GetEmail() to return
+"Jerry" and "jerry.jerry@jerry.jerry" respectively. I called the GetNumAttValPairs() function
+before adding any pairs to make sure the variable counter was initialized to 0.
+I then called the AddAttValPair() function many times to load the object with pairs. Then, I ran
+a loop with the GetAttVal() function and checked if the output was complete with all of the
+pairs I added without duplicates.
+
+AttributeTranslator:
+First, I tested my private helper functions, pairToKey(), parseKey(), and loadPair() by inputting
+lines or parts of lines of the translator.txt file to check if they were parsing the strings
+correctly. The pairToKey() function converts an AttValPair to a string, the parseKey() takes in
+a line of the translator.txt file and generates a key from the first AttValPair, and the loadPair()
+function takes the back portion of the line of the translator.txt file and inputs the data into
+an AttValPair. I tested all of these functions by taking about 50 lines of the translator.txt file
+and looping through the file, inputting the lines into the functions one by one and printing them
+to see if the output is the same as what I expected.
+I tested the Load() function by loading a smaller version of the translator.txt file, only keeping
+the first roughly 100 lines and printing the contents of the m_attributeTree using a print function
+I wrote in the RadixTree class for debugging purposes. I then ran through the translator.txt file
+line by line to check if each line was properly encoded into keys and values in the RadixTree.
+I tested the FindCompatibleAttValPairs() function by again using a smaller version of the
+translator.txt file, first loading the file with Load() and randomly calling a couple of attValPairs
+and printing the output of the vector that is returned. I then Ctrl+F through the translator.txt file
+to check if the contents of the vector returned matched the contents of the file.
+
+MemberDatabase:
+I tested the LoadDatabase() function by using a small members.txt file first, printing out the
+contents of the m_profileTree and m_attributeTree with only a couple profiles loaded and comparing
+the PersonProfiles and the AttValPairs with the members.txt file to see if the information was
+being loaded correctly. After it seemed like the information was being loaded quite dependably,
+I tested the function with the full members.txt file, which also loaded successfully. Next, I
+included some edge cases where the function would return false if the members.txt file was not
+in the correct format, such as there being more or less AttValPairs than specified. I modified
+the members.txt file to have those errors in formatting, then ran the function again to see if the
+function returned false, which it did.
+To test the FindMatchingMembers() function, I again used a small members.txt file and randomly
+selected some attribute value pairs from among the members. I then looked through the translator.txt
+file to find all of the compatible attributes of the pairs I selected and called the function for
+each of the pairs I selected, cross checking the result of each function call to see if it matched
+with the profiles of the members.txt file. I then repeated this process with the full members.txt
+file and cross checked for profiles with compatible attributes to the attributes I selected.
+I tested the GetMemberByEmail() function by loading the members.txt file, then calling the function
+and printing the AttValPairs stored in the PersonProfiles returned by the function, checking with the
+members.txt file to see if I got they matched.
+
+MatchMaker:
+I tested the IdentifyRankedMatches() function by again starting with a small number of profiles in
+the members.txt file and printing out the results of the local vectors acting as intermediaries
+during the course of the function's runtime to hold AttValPairs, emails, etc. I then checked each
+of these intermediary data structures for whichever email I input as a parameter and checked things
+like if the profile AttValPairs were all loaded, if all of the compatible attributes were loaded
+by checking with the translator.txt file, and if the emails of the profiles with those compatible
+attributes were all loaded correctly without duplicates where there weren't supposed to be. After
+checking that each of these intermediary steps were working as I expected them to, I then ran the
+function again for a couple of emails with the entire members.txt file and checked each of the
+emails in the output and their counts and cross checked with the member.txt and translator.txt file
+by hand to see if the output matched up.

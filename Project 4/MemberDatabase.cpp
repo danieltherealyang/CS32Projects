@@ -7,7 +7,8 @@
 using namespace std;
 MemberDatabase::MemberDatabase() {}
 
-MemberDatabase::~MemberDatabase() {}
+MemberDatabase::~MemberDatabase() {
+}
 
 bool MemberDatabase::LoadDatabase(string filename) {
     ifstream file(filename);
@@ -18,13 +19,17 @@ bool MemberDatabase::LoadDatabase(string filename) {
     string line; string name; string email; int remainAttrib = 0;
     PersonProfile* memberProfile = nullptr; vector<vector<string>*> mailLists;
     while (getline(file, line)) {
+        if ((line == "" && remainAttrib != 0 && recordNum == 4) ||
+        (line != "" && remainAttrib == 0 && recordNum == 4)) //attrib doesn't match count
+            return false;
+
         if (line == "") {
             recordNum = 1;
             memberProfile = nullptr;
             continue;
         }
         
-        PersonProfile** profilePtr;
+        PersonProfile** profilePtr = nullptr;
         switch (recordNum) {
             case 1:
                 name = line;
@@ -33,11 +38,15 @@ bool MemberDatabase::LoadDatabase(string filename) {
             case 2:
                 email = line;
                 profilePtr = m_profileTree.search(email);
-                if (profilePtr != nullptr)
+                if (profilePtr != nullptr) //no duplicate emails
                     return false;
                 recordNum++;
                 continue;
             case 3:
+                for (int i = 0; i < line.length(); i++) { //check if count is all numbers
+                    if (!isdigit(line[i]))
+                        return false;
+                }
                 remainAttrib = stoi(line);
                 recordNum++;
                 continue;
@@ -69,6 +78,8 @@ bool MemberDatabase::LoadDatabase(string filename) {
             remainAttrib--;
         }
     }
+    if (remainAttrib != 0)
+        return false;
     //remove email m_attributeTree duplicates
     for (int i = 0; i < mailLists.size(); i++) {
         sort(mailLists[i]->begin(), mailLists[i]->end());

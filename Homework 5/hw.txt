@@ -1,0 +1,109 @@
+Daniel Yang
+ID: 205772799
+(Problem 1)
+a.
+                                        50
+                    20                                      60
+        10                      40                                      70
+            15              30                                      64      80
+                        23      36                                        75
+
+Alternate representation:
+50
+    20
+        10
+            15
+        40
+            30
+                23
+                36
+    60
+        70
+            64
+            80
+                75
+b.
+Pre-Order
+50,20,10,15,40,30,23,36,60,70,64,80,75
+In-Order
+10,15,20,23,30,36,40,50,60,64,70,75,80
+Post-Order
+15,10,23,36,30,40,20,64,75,80,70,60,50
+c.
+After deleting 30:
+50
+    20
+        10
+            15
+        40
+            23
+                36
+    60
+        70
+            64
+            80
+                75
+After deleting 20:
+50
+    15
+        10
+        40
+            23
+                36
+    60
+        70
+            64
+            80
+                75
+
+(Problem 2)
+a.
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node* parent;
+};
+b.
+void recursiveHelper(int value, Node* node):
+    if node data == value:
+        return;
+    if value < node data:
+        if node left != nullptr:
+            recursiveHelper(value, node left);
+        else
+            create new node with data set to value, point node left to new node;
+    if value > node data:
+        if node right != nullptr:
+            recursiveHelper(value, node right);
+        else
+            create new node with data set to value, point node right to new node;
+recursiveHelper end
+
+void insert(int value):
+    if rootNode == nullptr:
+        create new node, set data to value, point rootNode to new node;
+        return;
+
+    recursiveHelper(value, rootNode);
+insert end
+
+(Problem 3)
+a.
+            7
+    5               6
+3       1       2
+b.
+int arr[] = {7,5,6,3,1,2};
+c.
+int arr[] = {6,5,2,3,1};
+
+(Problem 4)
+a. O(C+S)
+b. O(log(C) + S)
+c. O(log(C) + log(S))
+d. O(log(S))
+e. O(1)
+f. O(log(C) + S)
+g. O(Slog(S))
+h. O(Clog(S))
